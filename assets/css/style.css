@@ -12,10 +12,56 @@ article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
-  margin: 0;
+    margin: 0;
 	padding: 0;
 	border: 0;
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
+}
+
+h1{
+    font-size:26px;
+    text-transform:uppercase;
+}
+
+bold{
+    font-weight: 700;
+}
+
+.user-input-panel{
+    padding:50px 20px;
+    border:4px solid #F5F7F9;
+    border-top:15px solid #F5F7F9;
+    margin:15px;
+}
+
+.section-header{
+    margin-bottom:20px;
+    text-align:center;
+}
+
+.instructions{
+    margin-bottom:20px;
+}
+
+.textarea{
+    color:red;
+}
+
+#submit{    
+    display: block;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 20px;
+    background-color: #0062FF;
+    color: white;
+    border-radius: 7px;
+    border: none;
+}
+
+#submit:hover{
+    background-color:blue;
+    cursor:pointer;
 }
