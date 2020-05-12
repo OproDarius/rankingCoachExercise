@@ -16,30 +16,26 @@
             </div> 
             <div class="section-body">
                 <div class="instructions">
-                    <p>You can paste data below in CSV format (<bold>timeStamp, budgetValue</bold>). Comma separated values and each entry on a new line, like in the example below: </p>
-                    <p>01.01.2019 10:00:00, 7</p>
-                    <p>01.01.2019 11:00:00, 0</p>
-                    <p>01.01.2019 21:00:01, 1</p>
-                    <p>01.01.2019 21:00:01, 6</p>
-                    <p>01.01.2019 21:00:01, 2</p>
-                    <p>01.01.2019 21:00:01, 0</p>
-                    <p>01.01.2019 21:00:01, 1</p>
-                    <p>01.01.2019 21:00:01, 0</p>
-                    <p>01.01.2019 21:00:01, 1</p>
+                    <p>You can paste data below in CSV format (<bold>date, budgetChangeValue1, budgetChangeDate1, budgetChangeValue2, budgetChangeDate2 etc...</bold>).
+                    <br /> Comma separated values and each entry on a new line, like in the example below: <br /><br /></p>
+                    01.01.2019, 7, 10:00, 0, 11:00, 1, 12:00, 6, 23:00<br />
+                    01.05.2019, 2, 10:00<br />
+                    01.06.2019, 0, 00:00<br />
+                    02.09.2019, 1, 13:13<br />
+                    03.01.2019, 0, 12:00, 1, 14:00<br />
                 </div>
-                <form>
-                    <textarea id="budget-input-data" rows="15" cols="100" required></textarea>
-                    <input id="submit" type="submit" value="Generate costs & Daily Report"></input>
+                <form action="includes/dailybudget-from-processor.php" method="POST">
+                    <textarea id="budget-input-data" name="inputdata" rows="15" cols="100" required></textarea>
+                    <input id="submit" type="submit" name="submit" value="Generate costs & Daily Report"></input>
                 </form>
-                <div class="form-split">
-
-                </div>
-                
             </div>       
         </section>
 
+        <section class="output-panel">
+            
+        </section>
 
-
-        <script src="assets/js/scripts.js" async></script>
+        <script src="assets/js/jquery-3.5.1.min.js" type="text/javascript"></script>
+        <script src="assets/js/scripts.js" type="text/javascript"></script>
     </body>
 </html>
