@@ -84,7 +84,7 @@
                             ];
                         }
 
-                        $campaignData[$thisDate]['buget_per_hour'] = $resultArr;
+                        $campaignData[$thisDate]['bugetPerHour'] = $resultArr;
                     }
                 }
             }
@@ -95,7 +95,7 @@
         function generateRandomHours(){
             
             $randomHour = [];
-            $randomCostsNumber = mt_rand(1,10);
+            $randomCostsNumber = mt_rand(9,10);
 
             // Generate random ammount of hours 
             for($i = 0; $i<$randomCostsNumber; $i++){
@@ -111,42 +111,52 @@
         }
 
 
+
+
+
         function calculateBudgetForInterval($randomHourlyCost, $currentDate)
         {
             global $campaignData;
-            
-            // If current date have daily budget changes search for alocated budget for the random hour
-            if (array_key_exists('buget_per_hour', $campaignData[$currentDate])) 
+            global $foundBuget; // Declare the return value of $this function
+
+            // Check if currentDate is the first day of the campaign
+            if(array_key_first($campaignData) == $campaignData[$currentDate]['date'])
             {
-                $searchInArray = $campaignData[$currentDate]['buget_per_hour'];
-                
-                echo '$randomHourlyCost: '.$randomHourlyCost;//TEMP
-                echo '------------';//TEMP
-                dd($searchInArray);//TEMP
 
-                // Loop each budget change until you find the corrent one
-                for($k=0;$k<sizeof($searchInArray);$k++){
 
-                    echo $searchInArray[$k]['hour'];
+
+
+
+                // Loop through each budget of current day
+                foreach($campaignData[$currentDate]['bugetPerHour'] as $todayBudgets){
+
+                    $dateTodayBudgets = date("H:i", strtotime($todayBudgets['hour'])); 
+                    $dateRandomHourlyCost = date("H:i", strtotime($randomHourlyCost)); 
+
+                    if($dateTodayBudgets < $dateRandomHourlyCost)
+                    {
+                        $foundBuget = $todayBudgets['buget'];
+                    }else{
+                        $foundBuget = 0;
+                    }
 
                 }
 
-                $randomHourlyCost = date("H:i", strtotime($randomHourlyCost));
-                $randomCostHourDate = date("H:i", strtotime($randomCostHour));
+                
 
-                // If current randomHourlyCost generated is having a budget, set it. If not, get the last budget before
-                // if()
-                // {
-
-                // }else{
-
-                // }
 
 
             }else{
-
+                $foundBuget = 'not yet';
             }
+
+            return $foundBuget;
+            
         }
+
+
+
+
 
         function generateRandomCosts()
         {
@@ -162,11 +172,13 @@
                 foreach($randomHourlyCosts as $randomHourlyCost)
                 {
 
+                    $budgetForThisInterval = calculateBudgetForInterval($randomHourlyCost, $currentDate);
+
                     $resultArr[] = 
                     [
                         'hour'  => $randomHourlyCost,
-                        'buget' => calculateBudgetForInterval($randomHourlyCost, $currentDate),
-                        'cost'  => $randomHourlyCost
+                        'buget' => $budgetForThisInterval,
+                        'cost'  => ''
                     ];
                 }
 
