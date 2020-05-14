@@ -73,6 +73,7 @@ table{
     margin-left:3%;
     width:94%;
     border-spacing: 0px;
+    margin-bottom: 100px;
 }
 
 tbody tr:nth-child(even) {

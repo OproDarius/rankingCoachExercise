@@ -4,7 +4,7 @@ $(document).ready(function() {
         event.preventDefault();
         var inputdata = $("#budget-input-data").val();
         var submit = $("#submit").val();
-        $(".output-panel").load("includes/dailybudget-from-processor.php", {
+        $(".output-panel").load("includes/adword-daily-history.controller.php", {
             inputdata: inputdata,
             submit: submit
         });

@@ -1,21 +1,17 @@
-<?php
-
-    // Development Functions
-    function dd($input)
-    {
-        echo '<pre>';
-        print_r($input);
-        echo '</pre>';
-    }
-    
-    if(isset($_POST['submit']))
-    {
-
-        $inputArrayCSV = array();   // Declare $inputArrayCSV, here, all the input from the user it will be stored
-        $campaignData = array();    // Declare $campaignData, here, all the input from the user it will be manipulated to generate daily campaign costs
+<?php 
+        
+    class generateCampaignData{
+        
+        // Run all functions needed to process the client input and create $campaignData
+        public function __construct()
+        {
+            $this->formatUserInputData();
+            $this->createDailyCampaignInterval();
+            $this->generateRandomCostsAndBudgetLimits();
+        }
 
         // Transform the user data to Array and save it to $inputArrayCSV
-        function formatUserInputData()
+        public function formatUserInputData()
         {
             global $inputArrayCSV;
             global $campaignData;
@@ -34,11 +30,11 @@
 
             }
         }
-        formatUserInputData();
+
 
         // Create an array list for every day of the campaign and store it in $campaignData.
         // Add every budget change to $campaignData acording to the day where belongs.
-        function createDailyCampaignInterval()
+        public function createDailyCampaignInterval()
         {
             global $inputArrayCSV; // User Data Input
             global $campaignData; // Campaign Days
@@ -90,10 +86,9 @@
                 }
             }
         }
-        createDailyCampaignInterval();
 
         // Return randomly between 1 and 10 hours(H:i) that will be used to simulate costs
-        function generateRandomHours(){
+        public function generateRandomHours(){
             
             $randomHour = [];
             $randomCostsNumber = mt_rand(3,10); // Generate between 3 an 10 costs daily
@@ -111,8 +106,9 @@
             return $randomHour;
         }
 
+        
         // For each simulated Cost process, calculate the Maximum Budget Available
-        function calculateBudgetForInterval($randomHourlyCost, $currentDate)
+        public function calculateBudgetForInterval($randomHourlyCost, $currentDate)
         {
             global $campaignData;
             global $foundBuget; // Declare the return value of $this function
@@ -207,7 +203,7 @@
         }
 
         // Generate the actual cost of current add process simulation
-        function generateCost($randomHourlyCost, $currentDate, $budgetForThisInterval)
+        public function generateCost($randomHourlyCost, $currentDate, $budgetForThisInterval)
         {
             // The logic behind generateCost():
             //
@@ -288,23 +284,23 @@
             return number_format((float)$generatedCost, 2, '.', ''); 
         }
 
-
+        
         // Generate all the costs and return them in the $campaignData array
-        function generateRandomCostsAndBudgetLimits()
+        public function generateRandomCostsAndBudgetLimits()
         {
             global $campaignData;
 
             // Loop through each day of campaign to set the hour and the budget of that hour
             foreach ($campaignData as $campaignDay)
             {
-                $randomHourlyCosts = generateRandomHours();
+                $randomHourlyCosts = $this->generateRandomHours();
                 $currentDate = $campaignDay['date'];
                 $resultArr=[];
 
                 foreach($randomHourlyCosts as $randomHourlyCost)
                 {
 
-                    $budgetForThisInterval = calculateBudgetForInterval($randomHourlyCost, $currentDate);
+                    $budgetForThisInterval = $this->calculateBudgetForInterval($randomHourlyCost, $currentDate);
 
                     $resultArr[] = 
                     [
@@ -329,84 +325,13 @@
                     $randomHourlyCost = $campaignDay['randomHourlyCost'][$campaignCost]['hour'];
                     $budgetForThisInterval = $campaignDay['randomHourlyCost'][$campaignCost]['buget'];
 
-                    $generatedCost = generateCost($randomHourlyCost, $currentDate, $budgetForThisInterval);
+                    $generatedCost = $this -> generateCost($randomHourlyCost, $currentDate, $budgetForThisInterval);
                     // Replace each cost with the generated one
                     $campaignData[$currentDate]['randomHourlyCost'][$campaignCost]['cost'] = $generatedCost;
 
                 }
             }
         }
-        generateRandomCostsAndBudgetLimits();
-
-        // This function is used just to output data from $campaignData array
-        function displayDailyHistoryAndCosts()
-        {
-            global $campaignData;
-
-            // Print table START
-            echo '<table><thead><tr><td>Date</td><td>Max. Budget</td><td>Total Cost</td><td>Costs generated</td></tr></thead><tbody>';
-
-            // Foreach day, determinate the date, max budget, total cost and all costs generated, and print them
-            foreach($campaignData as $campaignDay)
-            {
-
-                $date = $campaignDay['date']; // Current day date
-                $maxBudget = ''; // Declare max budget
-                $totalCosts = 0;
-                $listGeneratedCosts = '';
-
-
-                // Find the max budget for this day, 
-                // If current day have budget changes, take the greatest one
-                // else take the maximum budget left from "yesterday"
-                if (array_key_exists('bugetPerHour', $campaignDay)){
-
-                    foreach($campaignDay['bugetPerHour'] as $existingBudget)
-                    {
-                        if($existingBudget['buget'] > $maxBudget)
-                        {
-                            $maxBudget = $existingBudget['buget'];
-                        }
-                    }
-
-                }else{
-                    foreach($campaignDay['randomHourlyCost'] as $existingBudget)
-                    {
-                        if($existingBudget['buget'] > $maxBudget)
-                        {
-                            $maxBudget = $existingBudget['buget'];
-                        }
-                    }
-                }
-
-                // Find the sum of costs generated                
-                foreach($campaignDay['randomHourlyCost'] as $existingCosts)
-                {
-                    $totalCosts = $totalCosts + $existingCosts['cost'];
-                }
-                
-                // Add each cost generated in the string $listGeneratedCosts for output
-                foreach($campaignDay['randomHourlyCost'] as $existingCosts)
-                {
-                    $listGeneratedCosts .= '<b>'.$existingCosts['cost'].'</b> ('.$existingCosts['hour'].'); ';
-                }
-
-                echo '<tr>';
-                echo '<td>'.$date.'</td>';
-                echo '<td>'.$maxBudget.'</td>';
-                echo '<td>'.$totalCosts.'</td>';
-                echo '<td id="listGeneratedCosts">'.$listGeneratedCosts.'</td>';
-                echo '</tr>';
-
-            }
-
-            // Print table END
-            echo '</tbody></table>';
-        }
-
-        
-        displayDailyHistoryAndCosts();
-
     }
 
 ?>
