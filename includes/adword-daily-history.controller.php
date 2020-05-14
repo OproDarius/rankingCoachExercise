@@ -11,7 +11,6 @@
 
         $instance = new generateCampaignData();
         $output = new outputCampaignDataTable();
-        print_r($output);
 
         // Developer output
         echo '<h2>Print Output of $campaignData for developing</h2>';
