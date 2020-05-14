@@ -12,7 +12,7 @@
 
         <section class="user-input-panel">
             <div class="section-header">
-                <h1>Insert your Adwords Budget History data:</1>
+                <h1>Insert your Adwords Budget History data:</h1>
             </div> 
             <div class="section-body">
                 <div class="instructions">
